@@ -8,7 +8,7 @@ __author__ = "Ojas Chaturvedi"
 __github__ = "github.com/ojas-chaturvedi"
 __license__ = "MIT"
 
-env = 'test'
+env = 'test2'
 
 import argparse
 from inference import InferenceHandler
