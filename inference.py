@@ -103,8 +103,12 @@ class InferenceHandler:
         for p in range(total_programs):
             if p not in valid_programs:
                 invalid_programs.append(p)
+
+        print('valid_programs', valid_programs)
+        print('invalid_programs', invalid_programs)
         invalid_programs = [min_program_id + id for id in invalid_programs]
         invalid_programs = self.vocab.encode(invalid_programs)
+        print('invalid_programs_encoded', invalid_programs)
         return [[p] for p in invalid_programs]
 
     # TODO Force generate using subset of instrument instead of all.
@@ -123,6 +127,7 @@ class InferenceHandler:
             batch = batch.to(self.device)
             result = self.model.generate(inputs=batch, max_length=1024, num_beams=num_beams, do_sample=False,
                                          length_penalty=0.4, eos_token_id=self.model.config.eos_token_id, early_stopping=False, bad_words_ids=invalid_programs)
+            print('output', result)
             result = self._postprocess_batch(result)
             results.append(result)
             print('result', result)

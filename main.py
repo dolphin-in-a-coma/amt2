@@ -19,8 +19,16 @@ def main():
     parser.add_argument('-o', '--output', required=True, help='Path to output MIDI file')
     args = parser.parse_args()
 
+    input = args.input
+    instruments = input.split('.')[1].split('_')[1:]
+    instruments = [int(instrument) for instrument in instruments]
+    print('instruments', instruments)
+    num_beams = 1
+
+    output = args.output
+
     handler = InferenceHandler('./pretrained')
-    handler.inference(args.input, args.output)
+    handler.inference(input, output, valid_programs=instruments, num_beams=num_beams)
 
 if __name__ == "__main__":
     main()
