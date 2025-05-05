@@ -125,7 +125,9 @@ class InferenceHandler:
                                          length_penalty=0.4, eos_token_id=self.model.config.eos_token_id, early_stopping=False, bad_words_ids=invalid_programs)
             result = self._postprocess_batch(result)
             results.append(result)
+            print('result', result)
         event = self._to_event(results, frame_times)
+        print('event', event)
         note_seq.sequence_proto_to_midi_file(event, output_path)
 
     def _postprocess_batch(self, result):
