@@ -113,9 +113,9 @@ class InferenceHandler:
 
     # TODO Force generate using subset of instrument instead of all.
 
-    def inference(self, audio_path, output_path, valid_programs=None, num_beams=1):
+    def inference(self, audio_path, output_path, valid_programs=None, num_beams=1, instruments_adjustment='AFTER'):
         audio, _ = librosa.load(audio_path, sr=self.SAMPLE_RATE)
-        if valid_programs is not None:
+        if valid_programs is not None and instruments_adjustment == 'BEFORE':
             invalid_programs = self._get_program_ids(valid_programs)
         else:
             invalid_programs = None
@@ -125,14 +125,21 @@ class InferenceHandler:
         inputs_tensor, frame_times = self._batching(inputs_tensor, frame_times)
         for batch in tqdm(inputs_tensor):
             batch = batch.to(self.device)
+
             result = self.model.generate(inputs=batch, max_length=1024, num_beams=num_beams, do_sample=False,
-                                         length_penalty=0.4, eos_token_id=self.model.config.eos_token_id, early_stopping=False, bad_words_ids=invalid_programs)
+                                        length_penalty=0.4, eos_token_id=self.model.config.eos_token_id, early_stopping=False, bad_words_ids=invalid_programs)
             print('output', result)
             result = self._postprocess_batch(result)
             results.append(result)
             print('result', result)
         event = self._to_event(results, frame_times)
         print('event', event)
+
+        for i, event_ in enumerate(event):
+            print('event_', i, event_)
+
+        print(event[0])
+
         note_seq.sequence_proto_to_midi_file(event, output_path)
 
     def _postprocess_batch(self, result):

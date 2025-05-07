@@ -24,11 +24,12 @@ def main():
     instruments = [int(instrument) for instrument in instruments]
     print('instruments', instruments)
     num_beams = 1
+    instruments_adjustment = 'AFTER'
 
     output = args.output
 
     handler = InferenceHandler('./pretrained')
-    handler.inference(input, output, valid_programs=instruments, num_beams=num_beams)
+    handler.inference(input, output, valid_programs=instruments, num_beams=num_beams, instruments_adjustment=instruments_adjustment)
 
 if __name__ == "__main__":
     main()
