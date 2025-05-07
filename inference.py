@@ -135,10 +135,31 @@ class InferenceHandler:
         event = self._to_event(results, frame_times)
         print('event', event)
 
-        for i, event_ in enumerate(event):
-            print('event_', i, event_)
+        # print('codec', self.codec)
+        # print('vocab', self.vocab)
 
-        print(event[0])
+        print('valid_programs', valid_programs)
+        print('instruments_adjustment', instruments_adjustment)
+        if valid_programs is not None and instruments_adjustment == 'AFTER':
+            notes = event.notes
+            for note in notes:
+                closest_program = min(valid_programs, key=lambda x: abs(x - note.program))
+                print('note', note)
+                print('note.program', note.program)
+                print('closest_program', closest_program)
+                note.program = closest_program
+                print('note_adjusted', note)
+
+        print('event_adjusted', event)
+        # for name in dir(event):
+        #     print('attr', name)
+        #     try:
+        #         print('attr_value', getattr(event, name))
+        #     except:
+        #         pass
+
+        # print('event_type_range', self.codec.event_type_range('program'))
+        # print('event', event.note_sequence.notes)
 
         note_seq.sequence_proto_to_midi_file(event, output_path)
 
